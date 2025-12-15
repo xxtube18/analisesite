@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Path BR - LBFF Tracker</title>
+    <link rel="icon" href="img/freefire32-2.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/chunk-vendors.2a95031.css">
+    <link rel="stylesheet" href="css/app.753b26.css">
+</head>
+<body>
+    <div id="app"></div>
+
+    <!-- JS original -->
+    <script src="js/chunk-vendors.fe3948d9.js"></script>
+    <script src="js/app.818e136.js"></script>
+
+    <!-- SCRIPT MODO BR (nosso hack brasileiro!) -->
+    <script>
+        // MODO BR ATIVADO - FREE FIRE BRASIL ONLY 🇧🇷
+        console.log("%cPLAYER PATH BR ATIVADO! Forçando partida LBFF brasileira!", "color: #00ff00; font-size: 18px; font-weight: bold; background: #000; padding: 10px;");
+
+        // Dados simulados de uma final épica LBFF 2025 - Fluxo vs LOUD (Bermuda)
+        const brMatchData = {
+            matchId: "LBFF-2025-FINAL-BR",
+            mapName: "Bermuda",
+            mode: "Classic",
+            duration: "28:45",
+            winner: "Fluxo",
+            teams: [
+                {
+                    teamName: "Fluxo",
+                    placement: 1,
+                    players: [
+                        { playerName: "Mexico", kills: 12, death: "Survived", path: [[100,200],[350,450],[600,700]] },
+                        { playerName: "Godkill", kills: 8, death: "Survived", path: [[150,250],[400,500]] },
+                        { playerName: "Syaz", kills: 5, death: "Survived", path: [[200,300],[450,550]] },
+                        { playerName: "Memgod", kills: 7, death: "Survived", path: [[250,350],[500,600]] }
+                    ]
+                },
+                {
+                    teamName: "LOUD",
+                    placement: 2,
+                    players: [
+                        { playerName: "Thurzin", kills: 9, death: "Killed by Mexico", path: [[300,100],[500,300],[700,500]] },
+                        { playerName: "Bops", kills: 6, death: "Killed by Godkill", path: [[350,150],[550,350]] },
+                        { playerName: "Will", kills: 4, death: "Killed by Syaz", path: [[400,200],[600,400]] },
+                        { playerName: "Nobru", kills: 5, death: "Killed by Memgod", path: [[450,250],[650,450]] }
+                    ]
+                }
+            ],
+            safeZones: [[400,400,800], [300,300,400], [200,200,100]],
+            message: "LBFF 2025 - Fluxo campeão! 🇧🇷 Booyah!"
+        };
+
+        // Sobrescreve qualquer chamada de fetch da API original
+        const originalFetch = window.fetch;
+        window.fetch = function(url, options) {
+            // Se for chamada de match ou api, força dados BR
+            if (url && (url.includes('match') || url.includes('api') || url.includes('track'))) {
+                console.log("%cPartida LBFF brasileira carregada com sucesso!", "color: yellow; font-size: 16px;");
+                return Promise.resolve({
+                    ok: true,
+                    json: () => Promise.resolve(brMatchData),
+                    text: () => Promise.resolve(JSON.stringify(brMatchData)),
+                    status: 200
+                });
+            }
+            // Caso contrário, usa fetch normal
+            return originalFetch.apply(this, arguments);
+        };
+
+        // Mensagem no console quando abrir
+        setTimeout(() => {
+            console.log("%cDigite qualquer ID (ex: 123 ou BR2025) e clique ADD → vai carregar Fluxo vs LOUD LBFF 2025!", "color: cyan; font-size: 14px;");
+        }, 2000);
+    </script>
+</body>
+</html>
