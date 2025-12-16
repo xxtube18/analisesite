@@ -3,45 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Player Path BR - LBFF Tracker</title>
+    <title>Player Path BR - FFWS Split 2 2025</title>
     <link rel="icon" href="img/freefire32-2.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     
+    <!-- CSS -->
     <link rel="stylesheet" href="css/chunk-vendors.2a95031.css">
     <link rel="stylesheet" href="css/app.753b26.css">
 </head>
 <body>
     <div id="app"></div>
 
+    <!-- JS original -->
     <script src="js/chunk-vendors.fe3948d9.js"></script>
     <script src="js/app.818e136.js"></script>
 
-    <!-- NÃO COLOQUE NADA AQUI EMBAIXO AINDA -->
-    <!-- O layout vai aparecer e ficar agora -->
-
+    <!-- API BR ATIVADA - PUXA DOS SEUS IDs -->
     <script>
-        // Só depois que tudo carregar a gente força o BR
-        window.addEventListener('load', function() {
-            console.log("Tudo carregou, agora forçando BR");
+        // API com os seus 66 IDs do Split 2
+        const API_BR = "https://ffwsbr-split2-api.onrender.com/api/match/";
 
-            setTimeout(function() {
-                if (document.getElementById('app').__vue__) {
-                    const vue = document.getElementById('app').__vue__;
-                    vue.hasMatch = true;
-                    vue.hasMap = true;
-                    vue.hasTeam = true;
-                    vue.matchData = {
-                        matchId: "LBFF-2025",
-                        mapName: "Bermuda",
-                        winner: "Fluxo",
-                        teams: ["Fluxo", "Team Solid", "LOUD", "LOS"],
-                        message: "Fluxo Booyah! 🇧🇷"
-                    };
-                    vue.$forceUpdate();
-                    console.log("BR forçado com sucesso!");
-                }
-            }, 1500);  // espera 1,5 segundo pro vue nascer
-        });
+        // Espera o app Vue carregar e intercepta o ADD
+        const waitVue = setInterval(() => {
+            if (window.app && window.app.addMatchId) {
+                clearInterval(waitVue);
+
+                const originalAdd = window.app.addMatchId;
+                window.app.addMatchId = function(id) {
+                    if (!id) return originalAdd(id);
+
+                    console.log("Digitado ID: " + id + " → Puxando do Split 2 BR");
+
+                    fetch(API_BR + id)
+                      .then(r => r.json())
+                      .then(data => {
+                          window.app.hasMatch = true;
+                          window.app.hasMap = true;
+                          window.app.hasTeam = true;
+                          window.app.matchData = data;
+                          window.app.$forceUpdate();
+                          console.log("Partida carregada:", data);
+                      })
+                      .catch(() => {
+                          console.log("ID não encontrado - carregando genérica BR");
+                          window.app.hasMatch = true;
+                          window.app.matchData = { matchId: id, map: "Bermuda", winner: "Fluxo", message: "Partida BR genérica" };
+                      });
+
+                    originalAdd(id);
+                };
+            }
+        }, 500);
     </script>
 </body>
 </html>
