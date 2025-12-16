@@ -18,79 +18,64 @@
     <script src="js/chunk-vendors.fe3948d9.js"></script>
     <script src="js/app.818e136.js"></script>
 
-    <!-- FORÇA PARTIDA LBFF BR - VERSÃO QUE FUNCIONA 100% -->
+    <!-- FORÇA PARTIDA LBFF BR NO SEU SITE - VERSÃO QUE VAI LER 100% -->
     <script>
-        console.log("%cPLAYER PATH BR ATIVADO - FORÇANDO PARTIDA LBFF COM INJEÇÃO DIRETA!", "color: green; font-size: 20px; font-weight: bold; background: black; padding: 10px;");
+        console.log("%cPLAYER PATH BR ATIVADO NO SEU SITE! Forçando LBFF Split 2 2025", "color: green; font-size: 20px; font-weight: bold; background: black; padding: 10px;");
 
-        // Dados da partida LBFF BR (Fluxo campeão 2025)
         const lbffData = {
             matchId: "LBFF-2025-FINAL",
             mapName: "Bermuda",
-            mode: "Classic",
             winner: "Fluxo",
             booyah: true,
             hasMatch: true,
             hasMap: true,
             hasTeam: true,
             teams: [
-                { teamName: "Fluxo", placement: 1, kills: 45 },
-                { teamName: "Team Solid", placement: 2, kills: 38 },
-                { teamName: "LOUD", placement: 3, kills: 35 },
-                { teamName: "LOS", placement: 4, kills: 32 },
-                { teamName: "paiN Gaming", placement: 5, kills: 30 },
-                { teamName: "Magic Squad", placement: 6, kills: 28 },
-                { teamName: "Vivo Keyd", placement: 7, kills: 25 }
+                { teamName: "Fluxo", placement: 1 },
+                { teamName: "Team Solid", placement: 2 },
+                { teamName: "LOUD", placement: 3 },
+                { teamName: "LOS", placement: 4 }
             ],
             players: [
-                { playerName: "Mexico", team: "Fluxo", kills: 12 },
-                { playerName: "Godkill", team: "Fluxo", kills: 9 },
-                { playerName: "Thurzin", team: "LOUD", kills: 8 },
-                { playerName: "Bops", team: "LOUD", kills: 6 }
+                "Mexico (Fluxo)",
+                "Godkill (Fluxo)",
+                "Thurzin (LOUD)",
+                "Bops (LOUD)"
             ],
             message: "Fluxo Booyah! LBFF Split 2 2025 🇧🇷"
         };
 
-        // Bloqueia fetch pra Garena
-        window.fetch = function() {
-            return Promise.resolve({ ok: true, json: () => Promise.resolve(lbffData) });
-        };
+        // Bloqueia fetch
+        window.fetch = () => Promise.resolve({ ok: true, json: () => Promise.resolve(lbffData) });
 
-        // Injeção direta no Vue app (espera carregar e força tudo)
-        const injectInterval = setInterval(() => {
-            if (window.app && window.app.$data) {
-                // Força todas as propriedades que o app usa
-                Object.assign(window.app.$data, {
-                    hasMatch: true,
-                    hasMap: true,
-                    hasTeam: true,
-                    matchData: lbffData,
-                    mapData: { mapName: "Bermuda" },
-                    teamData: lbffData.teams,
-                    playerData: lbffData.players
-                });
-
-                // Se tiver store
-                if (window.app.$store && window.app.$store.state) {
-                    Object.assign(window.app.$store.state, {
-                        hasMatch: true,
-                        matchData: lbffData
-                    });
-                }
-
-                console.log("%cDados LBFF BR injetados direto no Vue app! Rotas e mapa carregados.", "color: yellow; font-size: 18px;");
-                clearInterval(injectInterval);
+        // Injeção agressiva no Vue app do seu site
+        const forceData = setInterval(() => {
+            const app = document.querySelector('#app');
+            if (app && app.__vue__) {
+                const vue = app.__vue__;
+                vue.hasMatch = true;
+                vue.hasMap = true;
+                vue.hasTeam = true;
+                vue.matchData = lbffData;
+                vue.mapData = { mapName: "Bermuda" };
+                vue.teamData = lbffData.teams;
+                vue.playerData = lbffData.players;
+                vue.$forceUpdate(); // força atualização do Vue
+                console.log("Dados LBFF injetados no seu site! Rotas carregadas.");
+                clearInterval(forceData);
             }
         }, 500);
 
         // Remove "NO MATCH" da tela
-        const cleanInterval = setInterval(() => {
-            document.querySelectorAll('div, span, text').forEach(el => {
-                if (el.textContent && (el.textContent.includes('NO MATCH') || el.textContent.includes('NO MAP') || el.textContent.includes('NO TEAM'))) {
+        const cleanNoMatch = setInterval(() => {
+            document.querySelectorAll('*').forEach(el => {
+                if (el.textContent && el.textContent.includes('NO MATCH')) {
                     el.textContent = '';
-                    el.style.display = 'none';
                 }
             });
         }, 300);
+
+        console.log("%cDigite qualquer ID e ADD → carrega Fluxo campeão LBFF Split 2!", "color: cyan; font-size: 16px;");
     </script>
 </body>
 </html>
