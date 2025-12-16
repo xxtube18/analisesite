@@ -18,22 +18,23 @@
     <script src="js/chunk-vendors.fe3948d9.js"></script>
     <script src="js/app.818e136.js"></script>
 
-    <!-- SCRIPT MODO BR (nosso hack brasileiro!) -->
+    <!-- MODO BR ATIVADO - PARTIDA LBFF BRASILEIRA FORÇADA -->
     <script>
-        // MODO BR ATIVADO - FREE FIRE BRASIL ONLY 🇧🇷
-        console.log("%cPLAYER PATH BR ATIVADO! Forçando partida LBFF brasileira!", "color: #00ff00; font-size: 18px; font-weight: bold; background: #000; padding: 10px;");
+        console.log("%cPLAYER PATH BR ATIVADO FORTE! 🇧🇷 Fluxo vs LOUD LBFF 2025 carregado em qualquer ID", "color: #00ff00; font-size: 20px; font-weight: bold; background: #000; padding: 10px;");
 
-        // Dados simulados de uma final épica LBFF 2025 - Fluxo vs LOUD (Bermuda)
+        // Dados simulados da final épica LBFF 2025 - Fluxo campeão
         const brMatchData = {
             matchId: "LBFF-2025-FINAL-BR",
             mapName: "Bermuda",
             mode: "Classic",
             duration: "28:45",
             winner: "Fluxo",
+            booyah: true,
             teams: [
                 {
                     teamName: "Fluxo",
                     placement: 1,
+                    kills: 45,
                     players: [
                         { playerName: "Mexico", kills: 12, death: "Survived", path: [[100,200],[350,450],[600,700]] },
                         { playerName: "Godkill", kills: 8, death: "Survived", path: [[150,250],[400,500]] },
@@ -44,39 +45,72 @@
                 {
                     teamName: "LOUD",
                     placement: 2,
+                    kills: 38,
                     players: [
                         { playerName: "Thurzin", kills: 9, death: "Killed by Mexico", path: [[300,100],[500,300],[700,500]] },
                         { playerName: "Bops", kills: 6, death: "Killed by Godkill", path: [[350,150],[550,350]] },
                         { playerName: "Will", kills: 4, death: "Killed by Syaz", path: [[400,200],[600,400]] },
                         { playerName: "Nobru", kills: 5, death: "Killed by Memgod", path: [[450,250],[650,450]] }
                     ]
+                },
+                {
+                    teamName: "Team Solid",
+                    placement: 3,
+                    kills: 35
+                },
+                {
+                    teamName: "LOS",
+                    placement: 4,
+                    kills: 32
                 }
             ],
             safeZones: [[400,400,800], [300,300,400], [200,200,100]],
-            message: "LBFF 2025 - Fluxo campeão! 🇧🇷 Booyah!"
+            hasMatch: true,
+            hasMap: true,
+            hasTeam: true,
+            message: "LBFF 2025 - Fluxo Booyah! 🇧🇷 Fan-made BR version"
         };
 
-        // Sobrescreve qualquer chamada de fetch da API original
+        // Sobrescreve TODAS as chamadas fetch (API Garena bloqueada)
         const originalFetch = window.fetch;
         window.fetch = function(url, options) {
-            // Se for chamada de match ou api, força dados BR
-            if (url && (url.includes('match') || url.includes('api') || url.includes('track'))) {
-                console.log("%cPartida LBFF brasileira carregada com sucesso!", "color: yellow; font-size: 16px;");
-                return Promise.resolve({
-                    ok: true,
-                    json: () => Promise.resolve(brMatchData),
-                    text: () => Promise.resolve(JSON.stringify(brMatchData)),
-                    status: 200
-                });
-            }
-            // Caso contrário, usa fetch normal
-            return originalFetch.apply(this, arguments);
+            console.log("%cAPI Garena bloqueada - carregando LBFF BR simulada!", "color: orange; font-size: 16px;");
+            return Promise.resolve({
+                ok: true,
+                status: 200,
+                json: () => Promise.resolve(brMatchData),
+                text: () => Promise.resolve(JSON.stringify(brMatchData))
+            });
         };
 
-        // Mensagem no console quando abrir
+        // Silencia toast de erro de rede (TOAST_NETWORK_ERROR)
+        const silenceInterval = setInterval(() => {
+            const toast = document.querySelector('.toast, [class*="toast"], [class*="network"], [class*="error"]');
+            if (toast) {
+                toast.style.display = 'none';
+                toast.remove();
+            }
+            if (window.Vue && window.Vue.prototype.$toast) {
+                window.Vue.prototype.$toast.error = () => {};
+                window.Vue.prototype.$toast.clear = () => {};
+                clearInterval(silenceInterval);
+            }
+        }, 300);
+
+        // Força dados no Vue app quando carregar
+        const forceInterval = setInterval(() => {
+            if (window.app) {
+                Object.assign(window.app, brMatchData);
+                if (window.app.$data) Object.assign(window.app.$data, brMatchData);
+                if (window.app.$store) window.app.$store.state.matchData = brMatchData;
+                console.log("%cDados LBFF BR injetados com sucesso!", "color: yellow; font-size: 18px;");
+                clearInterval(forceInterval);
+            }
+        }, 500);
+
         setTimeout(() => {
-            console.log("%cDigite qualquer ID (ex: 123 ou BR2025) e clique ADD → vai carregar Fluxo vs LOUD LBFF 2025!", "color: cyan; font-size: 14px;");
-        }, 2000);
+            console.log("%cDigite qualquer ID e clique ADD → carrega Fluxo vs LOUD LBFF 2025!", "color: cyan; font-size: 16px;");
+        }, 3000);
     </script>
 </body>
 </html>
