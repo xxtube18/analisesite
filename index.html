@@ -4,47 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Player Path BR - LBFF Tracker</title>
-    <link rel="icon" href="img/freefire32-2.ico" type="image/x-icon">
+    <link rel="icon" href="img/freefire32-2.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     
-    <!-- CSS -->
     <link rel="stylesheet" href="css/chunk-vendors.2a95031.css">
     <link rel="stylesheet" href="css/app.753b26.css">
 </head>
 <body>
     <div id="app"></div>
 
-    <!-- JS -->
     <script src="js/chunk-vendors.fe3948d9.js"></script>
     <script src="js/app.818e136.js"></script>
 
-    <!-- FORÇA LBFF BR - PARTIDA SIMULADA -->
+    <!-- NÃO COLOQUE NADA AQUI EMBAIXO AINDA -->
+    <!-- O layout vai aparecer e ficar agora -->
+
     <script>
-        console.log("%cPLAYER PATH BR CARREGADO! Forçando partida LBFF", "color: green; font-size: 20px;");
+        // Só depois que tudo carregar a gente força o BR
+        window.addEventListener('load', function() {
+            console.log("Tudo carregou, agora forçando BR");
 
-        const lbffData = {
-            hasMatch: true,
-            hasMap: true,
-            hasTeam: true,
-            matchData: {
-                matchId: "LBFF-2025",
-                mapName: "Bermuda",
-                winner: "Fluxo",
-                teams: ["Fluxo", "Team Solid", "LOUD", "LOS"],
-                message: "Fluxo Booyah! LBFF Split 2 2025 🇧🇷"
-            }
-        };
-
-        // Força dados quando o Vue carregar
-        const interval = setInterval(() => {
-            const app = document.getElementById('app');
-            if (app && app.__vue__) {
-                const vue = app.__vue__;
-                Object.assign(vue, lbffData);
-                vue.$forceUpdate();
-                clearInterval(interval);
-                console.log("Partida LBFF BR forçada!");
-            }
-        }, 500);
+            setTimeout(function() {
+                if (document.getElementById('app').__vue__) {
+                    const vue = document.getElementById('app').__vue__;
+                    vue.hasMatch = true;
+                    vue.hasMap = true;
+                    vue.hasTeam = true;
+                    vue.matchData = {
+                        matchId: "LBFF-2025",
+                        mapName: "Bermuda",
+                        winner: "Fluxo",
+                        teams: ["Fluxo", "Team Solid", "LOUD", "LOS"],
+                        message: "Fluxo Booyah! 🇧🇷"
+                    };
+                    vue.$forceUpdate();
+                    console.log("BR forçado com sucesso!");
+                }
+            }, 1500);  // espera 1,5 segundo pro vue nascer
+        });
     </script>
 </body>
 </html>
